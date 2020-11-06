@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
 import classes from './Layout.module.css';
 
-import SideDrawerContent from '../components/sideDrawerContent';
-
-import { AppBar, Toolbar, Button, Box, IconButton, Drawer } from '@material-ui/core';
+import {AppBar,
+        Toolbar, 
+        Button, 
+        Box, 
+        IconButton, 
+        Drawer, 
+        Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+    
+import SideDrawerContent from '../components/sideDrawerContent';
 
 
 class Layout extends Component{
 
     state = {
-        drawerOpen : false
+        showDrawer : false,
     }
 
     handleDrawerToggle = () => {
@@ -21,11 +27,13 @@ class Layout extends Component{
 
     render(){
         const appbar = (
-            <AppBar position="static">
+            <AppBar position="sticky" >
                 <Toolbar>
-                    <IconButton color="inherit" onClick={this.handleDrawerToggle} >
-                        <MenuIcon/>
-                    </IconButton >
+                    <Hidden smUp>
+                        <IconButton  color="inherit" onClick={this.handleDrawerToggle} >
+                            <MenuIcon/>
+                        </IconButton >
+                    </Hidden>
                     <section className={classes.appbarRight}>
                         <Button color="inherit" >Login</Button>
                     </section>
@@ -45,8 +53,8 @@ class Layout extends Component{
 
         return (
             <Box>
-                {sideDrawer}
                 {appbar}
+                {sideDrawer}
                 <main>
                     {this.props.children}
                 </main>
