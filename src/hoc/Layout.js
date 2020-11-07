@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classes from './Layout.module.css';
 
 import {AppBar,
         Toolbar, 
@@ -9,9 +8,16 @@ import {AppBar,
         Drawer, 
         Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-    
+import { withStyles } from '@material-ui/core/styles';
+
 import SideDrawerContent from '../components/sideDrawerContent';
 
+const styles = theme => ({
+    appbarRight:{
+        marginLeft: "auto",
+        marginRight: "-12px"
+    }
+});
 
 class Layout extends Component{
 
@@ -26,6 +32,7 @@ class Layout extends Component{
     }
 
     render(){
+        const { classes } = this.props;
         const appbar = (
             <AppBar position="sticky" >
                 <Toolbar>
@@ -34,7 +41,14 @@ class Layout extends Component{
                             <MenuIcon/>
                         </IconButton >
                     </Hidden>
+                    <Hidden xsDown>
+                        <p>Plagiarism detector</p>                
+                    </Hidden>
+            
                     <section className={classes.appbarRight}>
+                        <Hidden xsDown>
+                            <Button color="inherit" >Classroom</Button>
+                        </Hidden>
                         <Button color="inherit" >Login</Button>
                     </section>
                 </Toolbar>
@@ -63,4 +77,4 @@ class Layout extends Component{
     } 
 }
 
-export default Layout;
+export default withStyles(styles)(Layout);
