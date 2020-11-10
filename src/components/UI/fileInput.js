@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 const styles = theme => ({
     input:{
@@ -27,13 +27,16 @@ const FileInput = props =>{
                 onChange={props.select}
                 className={classes.input}/>
 
-            <label htmlFor="inputId" className={classes.label}>
-                <Typography
-                    align='center'
-                    variant='button'
-                    noWrap
-                >{props.label}
-                </Typography>
+            <label htmlFor="inputId">
+                <Button
+                    variant="outlined"
+                    component="span">
+                    <Typography
+                        variant="button"
+                        noWrap>
+                        {props.label}
+                    </Typography>
+                </Button>
             </label>
         </React.Fragment>
     )

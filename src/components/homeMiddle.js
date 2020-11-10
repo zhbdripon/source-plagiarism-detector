@@ -22,7 +22,7 @@ const HomeMiddle = (props) =>{
     return (
         <Card variant="outlined" className={classes.root}>
             <CardContent >
-                <Grid container direction="column" justify="center" alignItems="center" spacing={4} className={classes.grid}>
+                <Grid container direction="column" justify="center" alignItems="center" spacing={2} className={classes.grid}>
                     <Grid item>
                         <FileInput 
                         label={"Select source files"}
@@ -34,14 +34,11 @@ const HomeMiddle = (props) =>{
                     </Grid>
                     <Grid item>
                         <Button
-                            style={{marginTop:"-10px"}} 
                             variant="contained" 
                             color="primary"
                             >Check
                         </Button>
-
                     </Grid>
-
                 </Grid>
             </CardContent>
         </Card>
