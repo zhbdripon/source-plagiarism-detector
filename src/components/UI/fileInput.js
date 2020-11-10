@@ -31,6 +31,7 @@ const FileInput = props =>{
                 <Typography
                     align='center'
                     variant='button'
+                    noWrap
                 >{props.label}
                 </Typography>
             </label>

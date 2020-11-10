@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 import { Grid } from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 
-import HomeCard from '../components/homeCard';
-import RightSideBar from '../components/rightSideBar';
-import LeftSideBar from '../components/leftSideBar';
+import HomeMiddle from '../components/homeMiddle';
+import RightSideMenu from '../components/rightSideMenu';
+import LeftSideMenu from '../components/leftSideMenu';
 
 
 const styles = theme => ({
@@ -20,19 +20,20 @@ const styles = theme => ({
     }
 });
 
+
 class Home extends Component {
     render(){
         const { classes } = this.props;
         return (
             <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2} style={{height:"500px"}}>
                 <Grid item xs={12} sm={2} className={classes.leftSideBar}>
-                    <LeftSideBar/>
+                    <LeftSideMenu/>
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                    <HomeCard />
+                    <HomeMiddle />
                 </Grid>
                 <Grid xs={12} sm={2} item className={classes.rightSideBar}>
-                    <RightSideBar/>
+                    <RightSideMenu/>
                 </Grid>
             </Grid>
         )

@@ -16,6 +16,9 @@ const styles = theme => ({
     appbarRight:{
         marginLeft: "auto",
         marginRight: "-12px"
+    },
+    content: {
+        marginTop: "16px"
     }
 });
 
@@ -69,7 +72,7 @@ class Layout extends Component{
             <Box>
                 {appbar}
                 {sideDrawer}
-                <main>
+                <main className={classes.content}>
                     {this.props.children}
                 </main>
             </Box>
