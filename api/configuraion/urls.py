@@ -23,5 +23,6 @@ router.registry.extend(pc_auth_route.registry)
 
 urlpatterns = [
     path('',include(router.urls)),
+    path('',include('pc_auth.urls')),
     path('admin/', admin.site.urls),
 ]
