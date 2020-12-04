@@ -11,25 +11,34 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# setting up directories
+ROOT_DIR = environ.Path(__file__) - 3
+API_DIR = ROOT_DIR.path('api')
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#231wnymh0q#q-pgy=6v8u==#7x2hut2e2%_znz#kabch2tn=f'
+# load os environment variable
+env = environ.Env()
+DJANGO_ENV = env.str('DJANGO_ENV', default='development')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if DJANGO_ENV == 'development':
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+#load evironemnt variable from .env file
+env_file = ROOT_DIR('.env')
+env.read_env(env_file)
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env.str('DJANGO_SECRET_KEY')
+
+
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[])
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -130,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = env.str('DEFAULT_TIME_ZONE', default='UTC')
 
 USE_I18N = True
 
