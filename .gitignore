@@ -176,3 +176,6 @@ dmypy.json
 #vscode
 .vscode
 
+#media files
+uploads
+

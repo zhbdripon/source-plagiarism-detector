@@ -7,9 +7,19 @@ from plagiarism.serializers import PlagiarismSerializer, SourceCodeSerializer
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.reverse import reverse
 
 from django.http import QueryDict
 
+class PlagiarismApiListView(APIView):
+    permission_classes = (drf_permissions.AllowAny, )
+
+    def get(self, request):
+        return Response({
+        'plagiarism': request.build_absolute_uri(reverse('plagiarism-list')),
+        'source': request.build_absolute_uri(reverse('source-list')),
+    })
 
 class PlagiarismList(generics.ListCreateAPIView):
     serializer_class = PlagiarismSerializer
