@@ -8,7 +8,8 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.response import Response
 
-from django.core.files import File
+from django.http import QueryDict
+
 
 class PlagiarismList(generics.ListCreateAPIView):
     serializer_class = PlagiarismSerializer
@@ -21,13 +22,14 @@ class PlagiarismList(generics.ListCreateAPIView):
         serializer.save(owner=(self.request.user if self.request.user.is_authenticated else None))
 
     def get_serializer_context(self):
-        source_data = [
-            {'file':file,'base':tuple[0]=='base'} 
-            for tuple in self.request.data.lists() if (tuple[0]=='source' or tuple[0]=='base') 
-            for file in tuple[1]
-        ]
         context = super().get_serializer_context()
-        context.update({"source_data": source_data})
+        if type(self.request.data) == type(QueryDict("")):
+            source_data = [
+                {'file':file,'base':tuple[0]=='base'} 
+                for tuple in self.request.data.lists() if (tuple[0]=='source' or tuple[0]=='base') 
+                for file in tuple[1]
+            ]
+            context.update({"source_data": source_data})
         return context
 
 class PlagiarismDetail(generics.RetrieveUpdateAPIView):
