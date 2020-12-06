@@ -11,14 +11,16 @@ from rest_framework.views import APIView
 from rest_framework.reverse import reverse
 
 from django.http import QueryDict
+from utils.data import LANGUAGE_CHOICES
 
 class PlagiarismApiListView(APIView):
     permission_classes = (drf_permissions.AllowAny, )
 
     def get(self, request):
         return Response({
-        'plagiarism': request.build_absolute_uri(reverse('plagiarism-list')),
-        'source': request.build_absolute_uri(reverse('source-list')),
+        'plagiarisms': request.build_absolute_uri(reverse('plagiarism-list')),
+        'sources': request.build_absolute_uri(reverse('source-list')),
+        'languages': request.build_absolute_uri(reverse('language-list')),
     })
 
 class PlagiarismList(generics.ListCreateAPIView):
@@ -52,6 +54,11 @@ class PlagiarismDetail(generics.RetrieveUpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save(owner=self.request.user)
+
+class SupportedLanguages(APIView):
+    
+    def get(self,request):
+        return Response(LANGUAGE_CHOICES)
 
 
 class FileList(generics.ListCreateAPIView):

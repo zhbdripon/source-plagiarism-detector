@@ -6,4 +6,5 @@ urlpatterns = [
     path('plagiarism/<int:pk>/',views.PlagiarismDetail.as_view(),name='plagiarism-detail'),
     path('source/',views.FileList.as_view(),name='source-list'),
     path('source/<int:pk>/',views.FileDetail.as_view(),name='source-detail'),
+    path('languages/',views.SupportedLanguages.as_view(),name='language-list')
 ]
