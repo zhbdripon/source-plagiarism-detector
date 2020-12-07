@@ -22,6 +22,28 @@ const styles = theme => ({
 
 
 class Home extends Component {
+    state  = {
+        homeMiddle: {
+            languageSelectValue: "",
+            languages: [
+                'c++',
+                'java',
+                'python',
+                
+                    
+            ]
+        }
+    }
+
+    hangleLanguageSelect = (e) =>{
+        this.setState({
+            homeMiddle:{
+                ...this.state.homeMiddle,
+                languageSelectValue : e.target.value
+            }
+        })
+    }
+
     render(){
         const { classes } = this.props;
         return (
@@ -30,7 +52,12 @@ class Home extends Component {
                     <LeftSideMenu/>
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                    <HomeMiddle />
+                    <HomeMiddle
+                        seletedLanguage = {this.state.homeMiddle.languageSelectValue}
+                        languages={this.state.homeMiddle.languages}
+                        onLanguageSelect={(e)=>this.hangleLanguageSelect(e)}
+
+                    />
                 </Grid>
                 <Grid xs={12} sm={2} item className={classes.rightSideBar}>
                     <RightSideMenu/>
