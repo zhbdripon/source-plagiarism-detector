@@ -157,6 +157,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    env.str('FRONTEND_SERVER'),
+)
 
 MOSSID = env.int('MOSS_ID')
