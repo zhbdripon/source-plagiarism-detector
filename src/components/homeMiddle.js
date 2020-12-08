@@ -19,7 +19,7 @@ const styles = theme => ({
         border: "5px solid #00000020"
     },
     grid: {
-        height: "230"
+        height: "auto"
     },
     selectTextField: {
         "& .MuiSelect-outlined": {
@@ -41,7 +41,7 @@ const HomeMiddle = (props) =>{
             variant='outlined'
             id='language-select'
             className={classes.selectTextField}
-            value={props.seletedLanguage}
+            value={props.selectedLanguage}
             onChange={props.onLanguageSelect}
             SelectProps={{displayEmpty: true}}
             >
@@ -49,8 +49,8 @@ const HomeMiddle = (props) =>{
                 <Typography variant="button" noWrap>Select Language</Typography>
             </MenuItem>
             {props.languages.map(lan => {
-                return (<MenuItem key={lan} value={lan}>
-                    <Typography variant="button" noWrap>{lan}</Typography>
+                return (<MenuItem key={lan['name']} value={lan['name']}>
+                    <Typography variant="button" noWrap>{lan['name']}</Typography>
                 </MenuItem>)
             })}
         </TextField>

@@ -58,7 +58,7 @@ class PlagiarismDetail(generics.RetrieveUpdateAPIView):
 class SupportedLanguages(APIView):
     
     def get(self,request):
-        return Response(LANGUAGE_CHOICES)
+        return Response([{'name':choice[1],'value':choice[0]} for choice in LANGUAGE_CHOICES])
 
 
 class FileList(generics.ListCreateAPIView):

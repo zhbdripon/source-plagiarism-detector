@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 import { Grid } from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
@@ -24,22 +25,28 @@ const styles = theme => ({
 class Home extends Component {
     state  = {
         homeMiddle: {
-            languageSelectValue: "",
-            languages: [
-                'c++',
-                'java',
-                'python',
-                
-                    
-            ]
+            selectedLanguage:"",
+            languages: []
         }
     }
 
-    hangleLanguageSelect = (e) =>{
+    componentDidMount() {
+        axios.get('http://localhost:8000/api/plagiarism-app/languages/').then(res=>{
+            this.setState({
+                homeMiddle:{
+                    ...this.state.homeMiddle,
+                    languages:res.data
+                }
+            })
+        })
+    }
+    
+
+    handleLanguageSelect = (e) =>{
         this.setState({
             homeMiddle:{
                 ...this.state.homeMiddle,
-                languageSelectValue : e.target.value
+                selectedLanguage : e.target.value
             }
         })
     }
@@ -53,9 +60,9 @@ class Home extends Component {
                 </Grid>
                 <Grid item xs={12} sm={8}>
                     <HomeMiddle
-                        seletedLanguage = {this.state.homeMiddle.languageSelectValue}
+                        selectedLanguage={this.state.homeMiddle.selectedLanguage}
                         languages={this.state.homeMiddle.languages}
-                        onLanguageSelect={(e)=>this.hangleLanguageSelect(e)}
+                        onLanguageSelect={(e)=>this.handleLanguageSelect(e)}
 
                     />
                 </Grid>
