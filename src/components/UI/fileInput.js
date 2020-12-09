@@ -21,20 +21,20 @@ const FileInput = props =>{
     return (
         <React.Fragment>
             <input 
-                id="inputId"
+                id={props.inputID}
                 type="file" 
                 multiple
                 onChange={props.select}
                 className={classes.input}/>
 
-            <label htmlFor="inputId">
+            <label htmlFor={props.inputID}>
                 <Button
                     variant="outlined"
                     component="span">
                     <Typography
                         variant="button"
                         noWrap>
-                        {props.label}
+                        {props.warning ? props.warning:props.label}
                     </Typography>
                 </Button>
             </label>
