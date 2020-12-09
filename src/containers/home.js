@@ -27,7 +27,8 @@ class Home extends Component {
         homeMiddle: {
             selectedLanguage:"",
             languages: []
-        }
+        },
+        baseFileSelectionWarning:null
     }
 
     componentDidMount() {
@@ -51,6 +52,24 @@ class Home extends Component {
         })
     }
 
+    handleSubmissionFileSelect = (e) =>{
+        console.log('submission file');
+        console.log(e.target.files);
+    }
+    handleBaseFileSelect = (e) => {
+        console.log('base file');
+        console.log(e.target.files);
+        if(e.target.files.length<2){
+            this.setState({ baseFileSelectionWarning:"Select Atlest two files"})
+        }else{
+            this.setState({ baseFileSelectionWarning: e.target.files.length+" file(s) selected" })
+        }
+    }
+
+    handleSubmit = () =>{
+        console.log('submitting');
+    }
+
     render(){
         const { classes } = this.props;
         return (
@@ -62,8 +81,11 @@ class Home extends Component {
                     <HomeMiddle
                         selectedLanguage={this.state.homeMiddle.selectedLanguage}
                         languages={this.state.homeMiddle.languages}
-                        onLanguageSelect={(e)=>this.handleLanguageSelect(e)}
-
+                        onLanguageSelect={e=>this.handleLanguageSelect(e)}
+                        onSubmissionFileSelect={e=>this.handleSubmissionFileSelect(e)}
+                        onBaseFileSelect={e => this.handleBaseFileSelect(e)}
+                        onSubmit={this.handleSubmit}
+                        baseFileSelectionWarning={this.state.baseFileSelectionWarning}
                     />
                 </Grid>
                 <Grid xs={12} sm={2} item className={classes.rightSideBar}>

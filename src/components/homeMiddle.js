@@ -58,18 +58,25 @@ const HomeMiddle = (props) =>{
 
     const sourceFileSelector = (
         <FileInput
+            inputID="sourceFileInputId"
             label={"Select source files"}
-            select={(e) => { console.log(e.target.files) }}
+            select={props.onSubmissionFileSelect}
         />
     )
     const baseFileSelector = (
-        <FileInput label={"Select Base files"} />
+        <FileInput 
+            inputID="baseFileInputId"
+            label={"Select Base files"}
+            warning={props.baseFileSelectionWarning}
+            select={props.onBaseFileSelect}
+        />
     )
 
     const submitButton = (
         <Button
             variant="contained"
             color="primary"
+            onClick={props.onSubmit}
         >Check
         </Button>
     )
