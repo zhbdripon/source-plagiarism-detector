@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.reverse import reverse
 
 from django.http import QueryDict
-from utils.data import LANGUAGE_CHOICES
+from utils.data import LANGUAGE_CHOICES, EXTENSION_OF
 
 class PlagiarismApiListView(APIView):
     permission_classes = (drf_permissions.AllowAny, )
@@ -58,7 +58,7 @@ class PlagiarismDetail(generics.RetrieveUpdateAPIView):
 class SupportedLanguages(APIView):
     
     def get(self,request):
-        return Response([{'name':choice[1],'value':choice[0]} for choice in LANGUAGE_CHOICES])
+        return Response([{'name':choice[1],'value':choice[0],'extensions':EXTENSION_OF[choice[0]]} for choice in LANGUAGE_CHOICES])
 
 
 class FileList(generics.ListCreateAPIView):
