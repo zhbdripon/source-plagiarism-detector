@@ -29,12 +29,14 @@ const FileInput = props =>{
 
             <label htmlFor={props.inputID}>
                 <Button
+                    disabled={props.disabled}
                     variant="outlined"
+                    color={props.valid ?"default":"secondary"}
                     component="span">
                     <Typography
                         variant="button"
                         noWrap>
-                        {props.warning ? props.warning:props.label}
+                        {props.label}
                     </Typography>
                 </Button>
             </label>
