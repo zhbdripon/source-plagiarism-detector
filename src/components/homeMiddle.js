@@ -40,12 +40,25 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const HomeMiddle = (props) =>{
+
+    const initialSubmissionFilesState = {
+        label: "Submission Files *",
+        files: [],
+        isVaild: false,
+        touched: false
+    }
+
+    const initialBaseFilesState = {
+        label: "Base Files",
+        files: [],
+        isVaild: false,
+        touched: false
+    }
+
     const [languages, setLanguages] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState({ name: "", value: "" });
-    const [submissionFiles, setSubmissionFiles] = useState({files:[],isVaild:false,touched:false})
-    const [baseFiles, setBaseFiles] = useState({ files: [], isVaild: false, touched: false})
-    const [submissionUploadLabel, setSubmissionUploadLabel] = useState("Submission Files *")
-    const [baseUploadLabel, setBaseUploadLabel] = useState("Base Files")
+    const [submissionFiles, setSubmissionFiles] = useState(initialSubmissionFilesState);
+    const [baseFiles, setBaseFiles] = useState(initialBaseFilesState);
     const [snackbarData, setSnackbarData] = useState({open:false,message:"",type:null});
     const classes = useStyles();
 
@@ -60,74 +73,90 @@ const HomeMiddle = (props) =>{
     const handleLanguageSelect = (e) => {
         setSelectedLanguage(languages.reduce((accum, lan) => e.target.value === lan['name'] ? lan : accum, {}))
     }
+
+    const isValidFileExtension = (file) =>{
+        let re = /(?:\.([^.]+))?$/;
+        let supportedExtensions = selectedLanguage['extensions'];
+        let fileExtension = re.exec(file.name)[1];
+        for (let ext of supportedExtensions) {
+            if (ext === fileExtension) return true;
+        }
+        return false;
+    }
     
     const validateFiles = (files,required_files) => {
         let valid = true;
+        let errorMessage = "";
+
         if (files.length < required_files) {
-            setSnackbarData({ open: true, message: `select atleast ${required_files} files`,type:"error" });
+            errorMessage = `select atleast ${required_files} files`;
             valid = false;
-        }
-        for(let file of files){
-            if (file.size > 524288) {
-                setSnackbarData({ open: true, message: 'file too large, max file size 512 kb', type: "error" });
-                valid = false;
-                break;
-            }
-            let re = /(?:\.([^.]+))?$/;
-            let supportedExtension = selectedLanguage['extensions'];
-            let fileExtension = re.exec(file.name)[1];
-            let notFound = true
-            for(let ext of supportedExtension){
-                console.log(ext,fileExtension)
-                if (ext === fileExtension) notFound = false;
-            }
-            if (notFound){
-                console.log('extension erreo')
-                setSnackbarData({ open:true, message: "please select one of these extension", type: "error" });
-                valid = false;
-                break;
+        }else{
+            for(let file of files){
+                if (file.size > 524288) {
+                    errorMessage = 'file too large, max file size 512 kb';
+                    valid = false;
+                }else if (!isValidFileExtension(file)){
+                    errorMessage = 'Unsupported File Extension';
+                    valid = false;
+                }
+                if(!valid)  break;
             }
         }
-        console.log(snackbarData);
-        
+        if(!valid)  setSnackbarData({open:true,message:errorMessage,type:"error"})
         return valid;
     }
     
     const handleSubmissionFileSelect = (e) => {
+        setSubmissionFiles({ ...initialSubmissionFilesState,touched: true});
         let file_array = Array.from(e.target.files)
-        setSubmissionFiles({...submissionFiles,touched: true,files:[],isVaild:false});
-        setSubmissionUploadLabel("Submission Files *");
         if (validateFiles(file_array,2)) {
-            setSubmissionFiles({...submissionFiles, files: file_array, isVaild: true });
-            setSubmissionUploadLabel(file_array.length + " file(s) selected");
+            setSubmissionFiles(prv=>({
+                    ...prv,
+                    label: file_array.length + " file(s) selected", 
+                    files: file_array, 
+                    isVaild: true,
+                })
+             );
         }
     }
     
     const handleBaseFileSelect = (e) => {
+        setBaseFiles({ ...initialBaseFilesState,touched: true});
         let file_array = Array.from(e.target.files)
-        setBaseFiles({ ...baseFiles, touched: true, files: [], isVaild: false });
-        setBaseUploadLabel("Base Files");
-        if (validateFiles(file_array, 0)) {
-            setBaseFiles({...baseFiles,files: file_array,isVaild: true});
-            setBaseUploadLabel(file_array.length + " file(s) selected");
+        if (file_array.length>0 && validateFiles(file_array, 0)) {
+            setBaseFiles(prv=>({
+                    ...prv,
+                    label: file_array.length + " file(s) selected",
+                    files: file_array,
+                    isVaild: true
+                })
+            );
         }
     }
-    
-    const handleSubmit = () => {
-        console.log(submissionFiles)
+
+    const getFormData = () =>{
         let formData = new FormData();
         formData.append('language', selectedLanguage['value']);
         submissionFiles.files.forEach(file => formData.append('source', file));
         baseFiles.files.forEach(file => formData.append('base', file));
-        
-        axios.post('/api/plagiarism-app/plagiarism/', formData, {
-            ...formData.getHeaders,
-            "Content-Length": formData.getLengthSync
-        }).then((response) => {
-            console.log(response);
-        }).catch((err) => {
-            console.log(err.response);
-        })
+        return formData;
+    }
+    
+    const handleSubmit = () => {
+        let formData = getFormData()
+        let headers = {...formData.getHeaders,"Content-Length": formData.getLengthSync}
+
+        axios.post('/api/plagiarism-app/plagiarism/', formData, headers)
+            .then((response) => {
+                setSnackbarData({ open: true, message: response['data']['result'], type: "success" })
+                setBaseFiles({ ...baseFiles, touched: true, files: [], isVaild: false });
+                setSubmissionFiles({ ...submissionFiles, touched: true, files: [], isVaild: false });
+            }).catch((err) => {
+                console.log(err.response);
+                let msg = "Something went wrong, Please Try again"
+                setSnackbarData({ open: true, message: msg, type: "error" })
+            })
     }
 
     const handleSnackbarClose = (event, reason) => {
@@ -139,29 +168,35 @@ const HomeMiddle = (props) =>{
     
     const languageSelectDropdown = (
         <TextField
-        select
-        variant='outlined'
-        id='language-select'
-        className={classes.selectTextField}
-        value={selectedLanguage['name']}
-        onChange={handleLanguageSelect}
-        SelectProps={{displayEmpty: true}}
-        >
+            select
+            variant='outlined'
+            id='language-select'
+            className={classes.selectTextField}
+            value={selectedLanguage['name']}
+            onChange={handleLanguageSelect}
+            SelectProps={{displayEmpty: true}}
+            >
             <MenuItem value="" disabled>
-                <Typography variant="button" noWrap>Select Language *</Typography>
+                <Typography 
+                    variant="button" 
+                    noWrap
+                    >Select Language *
+                </Typography>
             </MenuItem>
             {languages.map(lan => {
-                return (<MenuItem key={lan['name']} value={lan['name']}>
-                    <Typography variant="button" noWrap>{lan['name']}</Typography>
-                </MenuItem>)
+                return (
+                    <MenuItem key={lan['name']} value={lan['name']}>
+                        <Typography variant="button" noWrap>{lan['name']}</Typography>
+                    </MenuItem>
+                )
             })}
         </TextField>
     )
     
     const submissionFileSelector = (
         <FileInput
-        inputID="submissionFileInputId"
-            label={submissionUploadLabel}
+            inputID="submissionFileInputId"
+            label={submissionFiles['label']}
             select={e=>handleSubmissionFileSelect(e)}
             disabled={selectedLanguage['name'].length===0}
             valid={!submissionFiles['touched'] || submissionFiles['isVaild']}
@@ -170,7 +205,7 @@ const HomeMiddle = (props) =>{
     const baseFileSelector = (
         <FileInput 
             inputID="baseFileInputId"
-            label={baseUploadLabel}
+            label={baseFiles['label']}
             select={e=>handleBaseFileSelect(e)}
             disabled={!submissionFiles['isVaild']}
             valid={!baseFiles['touched'] || baseFiles['isVaild']}
@@ -183,7 +218,7 @@ const HomeMiddle = (props) =>{
             color="primary"
             disabled={selectedLanguage['value'] === 0 || !submissionFiles['isVaild']}
             onClick={handleSubmit}
-        >Check
+        >Plagiarism
         </Button>
     )
 
