@@ -22,6 +22,7 @@ const FileInput = props =>{
         <React.Fragment>
             <input 
                 id={props.inputID}
+                disabled={props.disabled}
                 type="file" 
                 multiple
                 onChange={props.select}
