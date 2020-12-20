@@ -150,8 +150,8 @@ const HomeMiddle = (props) =>{
         axios.post('/api/plagiarism-app/plagiarism/', formData, headers)
             .then((response) => {
                 setSnackbarData({ open: true, message: response['data']['result'], type: "success" })
-                setBaseFiles({ ...baseFiles, touched: true, files: [], isVaild: false });
-                setSubmissionFiles({ ...submissionFiles, touched: true, files: [], isVaild: false });
+                setBaseFiles({ ...initialBaseFilesState });
+                setSubmissionFiles({ ...initialSubmissionFilesState });
             }).catch((err) => {
                 console.log(err.response);
                 let msg = "Something went wrong, Please Try again"
