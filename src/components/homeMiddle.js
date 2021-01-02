@@ -9,7 +9,8 @@ import {Card,
         MenuItem, 
         TextField, 
         Typography,
-        Snackbar } from '@material-ui/core';
+        Snackbar
+    } from '@material-ui/core';
 import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -71,6 +72,7 @@ const HomeMiddle = (props) =>{
     }, [])
     
     const handleLanguageSelect = (e) => {
+        setSnackbarData({ ...snackbarData, open: false });
         setSelectedLanguage(languages.reduce((accum, lan) => e.target.value === lan['name'] ? lan : accum, {}))
     }
 
@@ -108,6 +110,7 @@ const HomeMiddle = (props) =>{
     }
     
     const handleSubmissionFileSelect = (e) => {
+        setSnackbarData({ ...snackbarData, open: false });
         setSubmissionFiles({ ...initialSubmissionFilesState,touched: true});
         let file_array = Array.from(e.target.files)
         if (validateFiles(file_array,2)) {
@@ -122,6 +125,7 @@ const HomeMiddle = (props) =>{
     }
     
     const handleBaseFileSelect = (e) => {
+        setSnackbarData({ ...snackbarData, open: false });
         setBaseFiles({ ...initialBaseFilesState,touched: true});
         let file_array = Array.from(e.target.files)
         if (file_array.length>0 && validateFiles(file_array, 0)) {
@@ -144,6 +148,7 @@ const HomeMiddle = (props) =>{
     }
     
     const handleSubmit = () => {
+        setSnackbarData({ ...snackbarData, open: false });
         let formData = getFormData()
         let headers = {...formData.getHeaders,"Content-Length": formData.getLengthSync}
 
@@ -156,6 +161,8 @@ const HomeMiddle = (props) =>{
                 console.log(err.response);
                 let msg = "Something went wrong, Please Try again"
                 setSnackbarData({ open: true, message: msg, type: "error" })
+            }).finally(()=>{
+                
             })
     }
 
