@@ -9,7 +9,8 @@ import {Card,
         MenuItem, 
         TextField, 
         Typography,
-        Snackbar
+        Snackbar,
+        CircularProgress 
     } from '@material-ui/core';
 import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from '@material-ui/core/styles';
@@ -61,6 +62,7 @@ const HomeMiddle = (props) =>{
     const [submissionFiles, setSubmissionFiles] = useState(initialSubmissionFilesState);
     const [baseFiles, setBaseFiles] = useState(initialBaseFilesState);
     const [snackbarData, setSnackbarData] = useState({open:false,message:"",type:null});
+    const [runningPlagiarism, setRunningPlagiarism] = useState(false);
     const classes = useStyles();
 
     
@@ -149,6 +151,7 @@ const HomeMiddle = (props) =>{
     
     const handleSubmit = () => {
         setSnackbarData({ ...snackbarData, open: false });
+        setRunningPlagiarism(true);
         let formData = getFormData()
         let headers = {...formData.getHeaders,"Content-Length": formData.getLengthSync}
 
@@ -162,7 +165,7 @@ const HomeMiddle = (props) =>{
                 let msg = "Something went wrong, Please Try again"
                 setSnackbarData({ open: true, message: msg, type: "error" })
             }).finally(()=>{
-                
+                setRunningPlagiarism(false);
             })
     }
 
@@ -229,6 +232,27 @@ const HomeMiddle = (props) =>{
         </Button>
     )
 
+    const gridContent = (
+        <React.Fragment>
+            <Grid item>
+                {languageSelectDropdown}
+            </Grid>
+            <Grid item>
+                {submissionFileSelector}
+            </Grid>
+            <Grid item>
+                {baseFileSelector}
+            </Grid>
+            <Grid item>
+                {submitButton}
+            </Grid>
+        </React.Fragment>
+    )
+
+    const progressCircle = (
+        <CircularProgress color="primary" size={180} thickness={3} />
+    )
+
     const snackbar = (
         <Snackbar open={snackbarData['open']} autoHideDuration={6000} onClose={handleSnackbarClose}>
             <Alert onClose={handleSnackbarClose} severity={snackbarData['type']}>
@@ -241,18 +265,7 @@ const HomeMiddle = (props) =>{
         <Card variant="outlined" className={classes.root}>
             <CardContent >
                 <Grid container direction="column" justify="center" alignItems="center" spacing={2} className={classes.grid}>
-                    <Grid item>
-                        {languageSelectDropdown}
-                    </Grid>
-                    <Grid item>
-                        {submissionFileSelector}
-                    </Grid>
-                    <Grid item>
-                        {baseFileSelector}
-                    </Grid>
-                    <Grid item>
-                        {submitButton}
-                    </Grid>
+                    {runningPlagiarism?progressCircle:gridContent}
                 </Grid>
                 {snackbar}
             </CardContent>
